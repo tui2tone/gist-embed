@@ -5,17 +5,32 @@ const gistUrl = 'https://gist.github.com/';
 const getData = (gistId) => {
     return new Promise((resolve, reject) => {
         const url = gistUrl + gistId + '.json'
-        axios.get(url, {
-                adapter: jsonpAdapter
-            })
-            .then((response) => {
-                resolve({
-                    content: response.data.div
+        if(typeof document === null) {
+            // Browser
+            axios.get(url, {
+                    adapter: jsonpAdapter
                 })
-            })
-            .catch((error) => {
-                reject(error)
-            })
+                .then((response) => {
+                    resolve({
+                        content: response.data.div
+                    })
+                })
+                .catch((error) => {
+                    reject(error)
+                })
+        } else {
+            // Node.js
+            axios.get(url, {
+                })
+                .then((response) => {
+                    resolve({
+                        content: response.data.div
+                    })
+                })
+                .catch((error) => {
+                    reject(error)
+                })
+        }
     })
 }
 
@@ -29,4 +44,7 @@ const embed = async (gistId, elm) => {
         })
 }
 
-module.exports = embed
+module.exports = {
+    embed,
+    get: getData
+}
