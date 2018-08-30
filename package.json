@@ -1,0 +1,17 @@
+{
+  "name": "gist-embed",
+  "version": "1.0.0",
+  "main": "src/index.js",
+  "author": "tui2tone <tui2tone@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "test-build": "browserify ./test/test.js -o ./test/bundle.js"
+  },
+  "dependencies": {
+    "axios": "^0.18.0",
+    "axios-jsonp": "^1.0.2"
+  },
+  "devDependencies": {
+    "browserify": "^16.2.2"
+  }
+}
