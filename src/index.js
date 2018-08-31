@@ -5,7 +5,7 @@ const gistUrl = 'https://gist.github.com/';
 const getData = (gistId) => {
     return new Promise((resolve, reject) => {
         const url = gistUrl + gistId + '.json'
-        if(typeof document === null) {
+        if(typeof document !== null) {
             // Browser
             axios.get(url, {
                     adapter: jsonpAdapter

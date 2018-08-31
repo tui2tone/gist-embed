@@ -1722,21 +1722,37 @@ const gistUrl = 'https://gist.github.com/';
 const getData = (gistId) => {
     return new Promise((resolve, reject) => {
         const url = gistUrl + gistId + '.json'
-        axios.get(url, {
-                adapter: jsonpAdapter
-            })
-            .then((response) => {
-                resolve({
-                    content: response.data.div
+        if(typeof document !== null) {
+            // Browser
+            axios.get(url, {
+                    adapter: jsonpAdapter
                 })
-            })
-            .catch((error) => {
-                reject(error)
-            })
+                .then((response) => {
+                    resolve({
+                        content: response.data.div
+                    })
+                })
+                .catch((error) => {
+                    reject(error)
+                })
+        } else {
+            // Node.js
+            axios.get(url, {
+                })
+                .then((response) => {
+                    resolve({
+                        content: response.data.div
+                    })
+                })
+                .catch((error) => {
+                    reject(error)
+                })
+        }
     })
 }
 
-const embed = async (gistId, elm) => {
+const embed = async (pointer, elm) => {
+    const gistId = getGistId(pointer)
     getData(gistId)
         .then((result) => {
             elm.innerHTML = result.content
@@ -1746,12 +1762,47 @@ const embed = async (gistId, elm) => {
         })
 }
 
-module.exports = embed
+const get = async (pointer) => {
+    const gistId = getGistId(pointer)
+    return getData(gistId)
+}
+
+const getGistId = (pointer) => {
+    // Get GistId from URL
+    if(pointer.indexOf('gist.github.com') > -1) {
+        const splited = pointer.split('/')
+        const id = splited[splited.length - 1].split('.')[0]
+        return id
+    }
+
+    // ID
+    return pointer
+}
+
+module.exports = {
+    embed,
+    get
+}
 },{"axios":2,"axios-jsonp":1}],30:[function(require,module,exports){
-const GistEmbed = require('../src/index')
+const Gist = require('../src/index')
 
 const main = () => {
-    GistEmbed('9a63adf6c9b5d4be135449818cd747c3', document.getElementById("gist"))
+    if(typeof document !== 'undefined') {
+        Gist.embed('9a63adf6c9b5d4be135449818cd747c3', document.getElementById("gist"))
+    } else {
+        // With Id
+        Gist.get('9a63adf6c9b5d4be135449818cd747c3')
+            .then((result) => {
+                // console.log(result)
+            })
+        
+        // With Url
+        Gist.get('https://gist.github.com/Culttm/a8c3ca85032c4b0cc67037425f150c44.js')
+            .then((result) => {
+                console.log(result)
+            })
+        
+    }
 }
 
 main()
