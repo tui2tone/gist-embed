@@ -34,7 +34,8 @@ const getData = (gistId) => {
     })
 }
 
-const embed = async (gistId, elm) => {
+const embed = async (pointer, elm) => {
+    const gistId = getGistId(pointer)
     getData(gistId)
         .then((result) => {
             elm.innerHTML = result.content
@@ -44,7 +45,24 @@ const embed = async (gistId, elm) => {
         })
 }
 
+const get = async (pointer) => {
+    const gistId = getGistId(pointer)
+    return getData(gistId)
+}
+
+const getGistId = (pointer) => {
+    // Get GistId from URL
+    if(pointer.indexOf('gist.github.com') > -1) {
+        const splited = pointer.split('/')
+        const id = splited[splited.length - 1].split('.')[0]
+        return id
+    }
+
+    // ID
+    return pointer
+}
+
 module.exports = {
     embed,
-    get: getData
+    get
 }
